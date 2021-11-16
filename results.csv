@@ -1,0 +1,4 @@
+,filepath,size_bytes,owner,group,pii_score,p_email_address,p_domain_name,p_person,p_location,p_date_time,p_nrp,pa_person,pa_location,pa_organization,pa_email_address,pa_phone_number,pa_credit_card,pa_ip_address,pc_location,pc_person,pc_birth_date,pc_email_address,p_credit_card,pc_phone_number
+0,sample_data_lite/resume.pdf,60180,shuaibjewon,staff,40.3,1.0,1.0,5,16,12.0,1.0,0,4,4,1,2,0,0,8.0,7.0,9,4.0,0.0,0.0
+1,sample_data_lite/resume.doc,49664,shuaibjewon,staff,39.699999999999996,1.0,1.0,6,16,12.0,1.0,0,4,1,1,1,0,0,8.0,7.0,9,4.0,0.0,0.0
+2,sample_data_lite/dir_1/sample_id.jpeg,102707,shuaibjewon,staff,15.299999999999999,0.0,0.0,3,1,0.0,0.0,0,1,0,0,2,1,0,0.0,0.0,9,0.0,1.0,3.0
