@@ -25,7 +25,11 @@ brew install poppler antiword unrtf tesseract swig
 ```
 ### Java 8
 
-Install Java 8 from [official website](https://www.oracle.com/java/technologies/downloads/#java8). You will need to create a free account if you don't have an Oracle account.
+1. Install Java 8 from [official website](https://www.oracle.com/java/technologies/downloads/#java8). You will need to create a free account if you don't have an Oracle account.
+2. **On Windows ONLY**, set the `JAVA_HOME` environment variable as described in [this article](https://confluence.atlassian.com/doc/setting-the-java_home-variable-in-windows-8895.html). If you don't have time to read, just follow bullet points below.
+
+- Find your java installation folder. It is usually in the form `C:\Program Files\Java\jdk1.8.0_XX` where XX is the version number. For example, mine is `C:\Program Files\Java\jdk1.8.0_311`
+- Run `setx -m JAVA_HOME "C:\Program Files\Java\jdk1.8.0_XX"`. Make sure to replace with actual folder name. For example, I have to run `setx -m JAVA_HOME "C:\Program Files\Java\jdk1.8.0_311"`
 
 ### Python dependencies
 
