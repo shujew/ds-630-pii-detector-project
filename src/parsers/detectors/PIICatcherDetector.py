@@ -15,6 +15,7 @@ from spacy.lang.en import English
 
 from parsers.detectors.DetectorInterface import DetectorInterface
 
+
 class PIICatcherDetector(DetectorInterface):
     """
     Detector for PIICatcher
@@ -54,14 +55,14 @@ class PIICatcherDetector(DetectorInterface):
         summary = {}
         for result in results:
             summary[result.name] = result.value
-        
+
         if 'PHONE' in summary:
             summary['PHONE_NUMBER'] = summary.pop('PHONE')
         if 'EMAIL' in summary:
             summary['EMAIL_ADDRESS'] = summary.pop('EMAIL')
         if 'SSN' in summary:
             summary['US_SSN'] = summary.pop('SSN')
-        
+
         return summary
 
     # This function was only available in v0.13.0 so
@@ -76,6 +77,7 @@ class PIICatcherDetector(DetectorInterface):
 
         scanner.scan(context)
         return scanner.get_pii_types()
+
 
 class IO(NamedObject):
     def __init__(self, name, fd):
@@ -121,6 +123,7 @@ class File(IO):
             with open(self.get_name(), "r") as f:
                 self.descriptor = f
                 super().scan(context)
+
 
 class Tokenizer:
     def __init__(self):

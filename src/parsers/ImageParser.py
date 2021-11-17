@@ -7,13 +7,14 @@ from parsers.DefaultParser import DefaultParser
 
 from PIL import Image, ImageOps, ImageEnhance
 
+
 class ImageParser(DefaultParser):
     """
     Adds supports for extracting text from image
     """
 
     # global reader to be re-used
-    ocr_reader = easyocr.Reader(['en'])  
+    ocr_reader = easyocr.Reader(['en'])
 
     def extract_text(self, path):
         im = Image.open(path)

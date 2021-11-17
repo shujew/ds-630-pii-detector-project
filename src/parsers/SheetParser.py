@@ -2,6 +2,7 @@ import pandas as pd
 
 from parsers.DefaultParser import DefaultParser
 
+
 class SheetParser(DefaultParser):
     """
     Adds supports for detecting PII from excel files
@@ -38,7 +39,7 @@ class SheetParser(DefaultParser):
             df = self.load_csv(path)
         else:
             df = self.load_excel(path)
-        
+
         results = {}
 
         for detector_name in self.detectors:
@@ -46,7 +47,8 @@ class SheetParser(DefaultParser):
             try:
                 detector = self.detectors[detector_name]
                 results[detector_name] = detector.extract_pii_from_df(df)
-            except Exception as e: 
-                print(f'Error while running {detector_name} on {path}: {e}. Skipping!')
+            except Exception as e:
+                print(
+                    f'Error while running {detector_name} on {path}: {e}. Skipping!')
 
         return results

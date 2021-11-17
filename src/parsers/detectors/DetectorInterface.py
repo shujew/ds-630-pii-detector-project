@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 class DetectorInterface():
     """
     Interface used by other dectector classes

@@ -11,6 +11,7 @@ from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.pdfpage import PDFPage
 from pdfminer.pdfparser import PDFParser
 
+
 class PdfParser(DefaultParser):
     """
     Adds supports for extracting text from pdf

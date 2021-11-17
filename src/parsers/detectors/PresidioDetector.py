@@ -9,11 +9,12 @@ from presidio_analyzer.recognizer_result import RecognizerResult
 
 from parsers.detectors.DetectorInterface import DetectorInterface
 
+
 class PresidioDetector(DetectorInterface):
     """
     Detector for Presidio
     """
-    
+
     def __init__(self):
         self.analyzer = AnalyzerEngine()
 
@@ -40,14 +41,14 @@ class PresidioDetector(DetectorInterface):
             'AU_ABN',
             'AU_ACN',
             'AU_TFN',
-            'AU_MEDICARE', 
+            'AU_MEDICARE',
         ]
 
     def extract_pii_from_text(self, text):
         summary = {}
         results = self.analyzer.analyze(
-            text=text, 
-            entities=self.get_pii_entities(), 
+            text=text,
+            entities=self.get_pii_entities(),
             language='en',
             score_threshold=0.80
         )
@@ -61,7 +62,7 @@ class PresidioDetector(DetectorInterface):
             summary[result.entity_type]['values'].append(
                 text[result.start:result.end]
             )
-        
+
         return summary
 
     def extract_pii_from_df(self, df):
@@ -83,23 +84,21 @@ class PresidioDetector(DetectorInterface):
                         }
                     summary[result.entity_type]['count'] += 1
                     summary[result.entity_type]['values'].append(t)
-            
+
             if len(result_list) == 0:
                 return ''
 
             pii_types = ''
             for result in result_list:
                 pii_types += f'{result.entity_type},'
-            
+
             # remove last comma
             return pii_types[:-1]
-        
+
         df_pii = df \
             .copy(deep=True) \
             .applymap(analyze_cell)
-        
+
         summary['df_pii'] = df_pii
 
         return summary
-        
-

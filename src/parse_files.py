@@ -13,6 +13,7 @@ pdf_parser = PdfParser()
 image_parser = ImageParser()
 sheet_parser = SheetParser()
 
+
 def list_filepaths(path):
     """
     Yields file paths in folder
@@ -29,6 +30,7 @@ def list_filepaths(path):
         for dirname in dirs:
             yield os.path.join(root, dirname)
 
+
 def get_file_extension(filepath):
     """
     Returns file extension from file path
@@ -41,6 +43,7 @@ def get_file_extension(filepath):
     """
     filepath_tup = os.path.splitext(filepath)
     return filepath_tup[1]
+
 
 def get_parser(file_extension):
     """
@@ -61,6 +64,7 @@ def get_parser(file_extension):
     else:
         return default_parser
 
+
 def get_file_metadata(filepath):
     """
     Return user, group, and size metadata
@@ -76,13 +80,13 @@ def get_file_metadata(filepath):
 
     def is_running_on_windows():
         return os.name == 'nt'
-    
+
     def get_owner():
         try:
             if is_running_on_windows():
                 pSD = get_file_security(filepath)
                 owner_name, _, _ = pSD.get_owner()
-                return owner_name 
+                return owner_name
             else:
                 return path_obj.owner()
         except:
@@ -93,7 +97,7 @@ def get_file_metadata(filepath):
             if is_running_on_windows():
                 pSD = get_file_security(filepath)
                 _, owner_domain, _ = pSD.get_owner()
-                return owner_domain 
+                return owner_domain
             else:
                 return path_obj.group()
         except:
@@ -105,6 +109,7 @@ def get_file_metadata(filepath):
         'size_bytes': stat_info.st_size,
         'last_modified': stat_info.st_mtime,
     }
+
 
 def parse_file(filepath, file_extension):
     """
@@ -124,6 +129,7 @@ def parse_file(filepath, file_extension):
         'metadata': metadata,
         'pii': pii,
     }
+
 
 def parse_files(path):
     """
@@ -145,7 +151,7 @@ def parse_files(path):
         try:
             result = parse_file(filepath, file_extension)
             results[filepath] = result
-        except Exception as e: 
+        except Exception as e:
             print(f'Error while parsing {filepath}: {e}. Skipping!')
 
     return results

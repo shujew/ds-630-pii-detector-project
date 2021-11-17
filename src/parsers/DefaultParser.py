@@ -7,20 +7,21 @@ from pathlib import Path
 
 from parsers.detectors.DetectorInterface import DetectorInterface
 
+
 class DefaultParser():
     """
     Default Parser for files
 
     This class uses textract under the hood to add support to extract
     text from many file types including doc and docx.
-    
+
     To ensure textract works, you need to follow instructions at
     https://textract.readthedocs.io/en/stable/installation.html
 
     For OSX:
         brew install --cask xquartz
         brew install poppler antiword unrtf tesseract swig
-    
+
     For Ubuntu/Debian:
         apt-get install python-dev libxml2-dev libxslt1-dev antiword \
         unrtf poppler-utils pstotext tesseract-ocr flac ffmpeg lame  \
@@ -60,7 +61,7 @@ class DefaultParser():
         """
         text_encode = text.encode(encoding="ascii", errors="ignore")
         text_decode = text_encode.decode()
-        # cleaning the text to remove extra whitespace 
+        # cleaning the text to remove extra whitespace
         return ' '.join([word for word in text_decode.split()])
 
     def detect_pii(self, path, extension):
@@ -75,7 +76,7 @@ class DefaultParser():
             dict: results
         """
         print('Running parser on', path)
-        
+
         text = self.extract_text(path)
         text = self.clean_text(text)
 
@@ -86,7 +87,8 @@ class DefaultParser():
             try:
                 detector = self.detectors[detector_name]
                 results[detector_name] = detector.extract_pii_from_text(text)
-            except Exception as e: 
-                print(f'Error while running {detector_name} on {path}: {e}. Skipping!')
+            except Exception as e:
+                print(
+                    f'Error while running {detector_name} on {path}: {e}. Skipping!')
 
         return results

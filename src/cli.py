@@ -1,3 +1,5 @@
+from results_builder import build_summary_df_from_results
+from parse_files import parse_files
 import argparse
 import pathlib
 
@@ -21,8 +23,6 @@ args = vars(parser.parse_args())
 folder_path = args['path']
 results_path = args['results']
 
-from parse_files import parse_files
-from results_builder import build_summary_df_from_results
 
 raw_results = parse_files(folder_path)
 df_results = build_summary_df_from_results(raw_results)
