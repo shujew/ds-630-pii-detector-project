@@ -40,7 +40,6 @@ Switch to your virtual environment and run `pip install -r requirements.txt`
 Note:
 
 - On Windows, reading `.doc` fails because antiword package is not available
-- On Windows, reading the `owner` and `group` metadata of a file is not available
 - **PLEASE** be sure to follow instructions in `SETUP` before running this project
 
 ### Command Line Interface
