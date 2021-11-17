@@ -1,6 +1,9 @@
 import pandas as pd
 
 # dict converting pii to score value
+# scores were assigned arbitrarily based on
+# which pii we felt had more risk than others
+# e.g. credit card info is worse than first name
 pii_name_to_score = {
     'CREDIT_CARD': 1,
     'CRYPTO': 1,
@@ -81,16 +84,19 @@ def build_summary_df_from_results(results):
     """
     data = []
     for filepath in results:
+        pii_score = calculate_overall_pii_score(results[filepath])
+        has_pii = pii_score > 0
+
         flattened_result = {}
 
         flattened_result['filepath'] = filepath
+        flattened_result['has_pii'] = has_pii
+        flattened_result['pii_score'] = pii_score
     
         metadata = results[filepath]['metadata']
         flattened_result['size_bytes'] = metadata['size_bytes']
         flattened_result['owner'] = metadata['owner']
         flattened_result['group'] = metadata['group']
-
-        flattened_result['pii_score'] = calculate_overall_pii_score(results[filepath])
 
         if 'presidio' in results[filepath]['pii']:
             presidio_results = results[filepath]['pii']['presidio']

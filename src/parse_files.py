@@ -1,5 +1,6 @@
 import os
 
+from get_file_metadata_windows import get_file_security
 from pathlib import Path
 
 from parsers.DefaultParser import DefaultParser
@@ -72,16 +73,29 @@ def get_file_metadata(filepath):
     """
     path_obj = Path(filepath)
     stat_info = os.stat(filepath)
+
+    def is_running_on_windows():
+        return os.name == 'nt'
     
     def get_owner():
         try:
-            return path_obj.owner()
+            if is_running_on_windows():
+                pSD = get_file_security(filepath)
+                owner_name, _, _ = pSD.get_owner()
+                return owner_name 
+            else:
+                return path_obj.owner()
         except:
             return 'unsupported'
 
     def get_group():
         try:
-            return path_obj.group()
+            if is_running_on_windows():
+                pSD = get_file_security(filepath)
+                _, owner_domain, _ = pSD.get_owner()
+                return owner_domain 
+            else:
+                return path_obj.group()
         except:
             return 'unsupported'
 
