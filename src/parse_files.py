@@ -1,6 +1,5 @@
 import os
 
-from get_file_metadata_windows import get_file_security
 from pathlib import Path
 
 from parsers.DefaultParser import DefaultParser
@@ -84,6 +83,10 @@ def get_file_metadata(filepath):
     def get_owner():
         try:
             if is_running_on_windows():
+                # hack for @st.cache to work properly on macOS
+                # because this import tries to get cached 
+                # crashing the app on macOS
+                get_file_security = eval('from get_file_metadata_windows import get_file_security')
                 pSD = get_file_security(filepath)
                 owner_name, _, _ = pSD.get_owner()
                 return owner_name
@@ -95,6 +98,10 @@ def get_file_metadata(filepath):
     def get_group():
         try:
             if is_running_on_windows():
+                # hack for @st.cache to work properly on macOS
+                # because this import tries to get cached 
+                # crashing the app on macOS
+                get_file_security = eval('from get_file_metadata_windows import get_file_security')
                 pSD = get_file_security(filepath)
                 _, owner_domain, _ = pSD.get_owner()
                 return owner_domain
