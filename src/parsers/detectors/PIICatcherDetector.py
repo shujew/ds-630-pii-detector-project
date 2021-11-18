@@ -22,34 +22,16 @@ class PIICatcherDetector(DetectorInterface):
     """
 
     def extract_pii_from_text(self, text):
-        # create and write text to temp file
-        tmp = tempfile.NamedTemporaryFile(delete=False)
-        tmp.write(str.encode(text, encoding='utf-8'))
-        # do analysis
-        result_summary = {}
-        with open(tmp.name) as d:
-            result = self.scan_file_object(d)
-            result_summary = self.summarize_scan_file_object_results(result)
-        # delete temp file
-        tmp.close()
-        os.unlink(tmp.name)
-
-        return result_summary
+        with tempfile.NamedTemporaryFile() as tmp:
+            tmp.write(str.encode(text, encoding='utf-8'))
+            result = self.scan_file_object(tmp)
+            return self.summarize_scan_file_object_results(result)
 
     def extract_pii_from_df(self, df):
-        # create and write text to temp file
-        tmp = tempfile.NamedTemporaryFile(delete=False)
-        df.to_csv(tmp)
-        # do analysis
-        result_summary = {}
-        with open(tmp.name) as d:
-            result = self.scan_file_object(d)
-            result_summary = self.summarize_scan_file_object_results(result)
-        # delete temp file
-        tmp.close()
-        os.unlink(tmp.name)
-
-        return result_summary
+        with tempfile.NamedTemporaryFile() as tmp:
+            df.to_csv(tmp)
+            result = self.scan_file_object(tmp)
+            return self.summarize_scan_file_object_results(result)
 
     def summarize_scan_file_object_results(self, results):
         summary = {}
