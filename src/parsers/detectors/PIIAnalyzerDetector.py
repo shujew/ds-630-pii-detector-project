@@ -21,9 +21,7 @@ class PIIAnalyzerDetector(DetectorInterface):
     def extract_pii_from_text(self, text):
         with tempfile.NamedTemporaryFile() as tmp:
             tmp.write(str.encode(text))
-            print(1)
             piianalyzer = PiiAnalyzer(tmp)
-            print(2)
             return piianalyzer.analysis()
 
     def extract_pii_from_df(self, df):
@@ -31,7 +29,7 @@ class PIIAnalyzerDetector(DetectorInterface):
         tmp = tempfile.NamedTemporaryFile(delete=False)
         df.to_csv(tmp)
         # do analysis
-        piianalyzer = PiiAnalyzer(tmp.name)
+        piianalyzer = PiiAnalyzer(tmp)
         results = piianalyzer.analysis()
         # delete temp file
         tmp.close()
