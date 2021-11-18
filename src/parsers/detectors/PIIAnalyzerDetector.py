@@ -18,9 +18,10 @@ class PIIAnalyzerDetector(DetectorInterface):
 
     def extract_pii_from_text(self, text):
         with tempfile.NamedTemporaryFile() as tmp:
-            with open(tmp.name, 'w') as f:
-                f.write(text)
-            piianalyzer = PiiAnalyzer(tmp.name)
+            tmp.write(str.encode(text))
+            print(1)
+            piianalyzer = PiiAnalyzer(tmp)
+            print(2)
             return piianalyzer.analysis()
 
     def extract_pii_from_df(self, df):
@@ -35,8 +36,8 @@ class PiiAnalyzer(object):
     in the library and it wouldn't work on python 3.7
     Adapted from https://gitlab.math.ubc.ca/tomyerex/piianalyzer/-/blob/master/piianalyzer/analyzer.py
     """
-    def __init__(self, filepath):
-        self.filepath = filepath
+    def __init__(self, filedata):
+        self.filedata = filedata
         self.parser = CommonRegex()
         # change 2: i changed the filepaths down here to reflect the installation path in colab
         self.standford_ner = StanfordNERTagger(
@@ -55,17 +56,16 @@ class PiiAnalyzer(object):
         ips = []
         data = []
 
-        with open(self.filepath, 'rU') as filedata:
-            reader = csv.reader(filedata)
+        reader = csv.reader(self.filedata)
 
-            for row in reader:
-                data.extend(row)
-                for text in row:
-                    emails.extend(self.parser.emails(text))
-                    phone_numbers.extend(self.parser.phones("".join(text.split())))
-                    street_addresses.extend(self.parser.street_addresses(text))
-                    credit_cards.extend(self.parser.credit_cards(text))
-                    ips.extend(self.parser.ips(text))
+        for row in reader:
+            data.extend(row)
+            for text in row:
+                emails.extend(self.parser.emails(text))
+                phone_numbers.extend(self.parser.phones("".join(text.split())))
+                street_addresses.extend(self.parser.street_addresses(text))
+                credit_cards.extend(self.parser.credit_cards(text))
+                ips.extend(self.parser.ips(text))
 
         for title, tag in self.standford_ner.tag(set(data)):
             if tag == 'PERSON':
