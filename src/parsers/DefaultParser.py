@@ -30,6 +30,7 @@ class DefaultParser():
     detectors = {
         'pii_analyzer': PIIAnalyzerDetector(),
         'pii_catcher': PIICatcherDetector(),
+        'presidio': PresidioDetector(),
     }
 
     def extract_text(self, path):
