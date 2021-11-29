@@ -29,6 +29,7 @@ class DefaultParser():
     """
     detectors = {
         'pii_analyzer': PIIAnalyzerDetector(),
+        'pii_catcher': PIICatcherDetector(),
     }
 
     def extract_text(self, path):
