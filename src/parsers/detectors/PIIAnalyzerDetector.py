@@ -31,6 +31,8 @@ class PIIAnalyzerDetector(DetectorInterface):
         tmp.close()
         os.unlink(tmp.name)
 
+        return results
+
     
     @st.cache
     def extract_pii_from_df(self, df):

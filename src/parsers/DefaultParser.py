@@ -28,7 +28,6 @@ class DefaultParser():
         libmad0 libsox-fmt-mp3 sox libjpeg-dev swig
     """
     detectors = {
-        'presidio': PresidioDetector(),
         'pii_analyzer': PIIAnalyzerDetector(),
     }
 
