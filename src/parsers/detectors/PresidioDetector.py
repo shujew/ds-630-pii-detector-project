@@ -9,6 +9,8 @@ from presidio_analyzer.recognizer_result import RecognizerResult
 
 from parsers.detectors.DetectorInterface import DetectorInterface
 
+from preshed.maps import PreshMap
+
 import streamlit as st
 
 class PresidioDetector(DetectorInterface):
@@ -45,7 +47,7 @@ class PresidioDetector(DetectorInterface):
             'AU_MEDICARE',
         ]
 
-    @st.cache
+    @st.cache(hash_funcs={PreshMap: lambda x: 0})
     def extract_pii_from_text(self, text):
         summary = {}
         results = self.analyzer.analyze(
@@ -67,7 +69,7 @@ class PresidioDetector(DetectorInterface):
 
         return summary
 
-    @st.cache
+    @st.cache(hash_funcs={PreshMap: lambda x: 0})
     def extract_pii_from_df(self, df):
         summary = {}
 
