@@ -24,15 +24,17 @@ class PIICatcherDetector(DetectorInterface):
 
     @st.cache
     def extract_pii_from_text(self, text):
-        with tempfile.NamedTemporaryFile() as tmp:
-            tmp.write(str.encode(text, encoding='utf-8'))
+        with tempfile.NamedTemporaryFile(mode='w+') as tmp:
+            tmp.write(text)
+            tmp.seek(0)
             result = self.scan_file_object(tmp)
             return self.summarize_scan_file_object_results(result)
 
     @st.cache
     def extract_pii_from_df(self, df):
-        with tempfile.NamedTemporaryFile() as tmp:
+        with tempfile.NamedTemporaryFile(mode='w+') as tmp:
             df.to_csv(tmp)
+            tmp.seek(0)
             result = self.scan_file_object(tmp)
             return self.summarize_scan_file_object_results(result)
 
@@ -83,7 +85,11 @@ class IO(NamedObject):
         ner = context["ner"]
 
         data = self._descriptor.read()
-        [self._pii.add(pii) for pii in ner.scan(data)]
+        print('here')
+        print(len(data))
+        ner_results = ner.scan(data)
+        print(ner_results)
+        [self._pii.add(pii) for pii in ner_results]
         tokens = tokenizer.tokenize(data)
         for t in tokens:
             if not t.is_stop:
