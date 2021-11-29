@@ -21,33 +21,12 @@ class PIIAnalyzerDetector(DetectorInterface):
     """
     @st.cache
     def extract_pii_from_text(self, text):
-        # create and write text to temp file
-        tmp = tempfile.NamedTemporaryFile(delete=False, mode='w+')
-        tmp.write(text)
-        # do analysis
-        piianalyzer = PiiAnalyzer(tmp)
-        results = piianalyzer.analysis()
-        # delete temp file
-        tmp.close()
-        os.unlink(tmp.name)
-
-        return results
-
+        piianalyzer = PiiAnalyzer(text)
+        return piianalyzer.text_analysis()
     
     @st.cache
     def extract_pii_from_df(self, df):
-        # create and write text to temp file
-        tmp = tempfile.NamedTemporaryFile(delete=False, mode='w+')
-        df.to_csv(tmp)
-        # do analysis
-        piianalyzer = PiiAnalyzer(tmp)
-        results = piianalyzer.analysis()
-        # delete temp file
-        tmp.close()
-        os.unlink(tmp.name)
-
-        return results
-
+        return self.extract_pii_from_text(df.to_string())
 
 class PiiAnalyzer(object):
     """
@@ -55,8 +34,8 @@ class PiiAnalyzer(object):
     in the library and it wouldn't work on python 3.7
     Adapted from https://gitlab.math.ubc.ca/tomyerex/piianalyzer/-/blob/master/piianalyzer/analyzer.py
     """
-    def __init__(self, filedata):
-        self.filedata = filedata
+    def __init__(self, text):
+        self.text = text
         self.parser = CommonRegex()
         # change 2: i changed the filepaths down here to reflect the installation path in colab
         self.standford_ner = StanfordNERTagger(
@@ -64,7 +43,7 @@ class PiiAnalyzer(object):
             'stanford-ner-2020-11-17/stanford-ner.jar'
         )
 
-    def analysis(self):
+    def text_analysis(self):
         people = []
         organizations = []
         locations = []
@@ -75,17 +54,15 @@ class PiiAnalyzer(object):
         ips = []
         data = []
 
-        reader = csv.reader(self.filedata)
+        # using regex
+        emails.extend(self.parser.emails(self.text))
+        phone_numbers.extend(self.parser.phones("".join(self.text.split())))
+        street_addresses.extend(self.parser.street_addresses(self.text))
+        credit_cards.extend(self.parser.credit_cards(self.text))
+        ips.extend(self.parser.ips(self.text))
 
-        for row in reader:
-            data.extend(row)
-            for text in row:
-                emails.extend(self.parser.emails(text))
-                phone_numbers.extend(self.parser.phones("".join(text.split())))
-                street_addresses.extend(self.parser.street_addresses(text))
-                credit_cards.extend(self.parser.credit_cards(text))
-                ips.extend(self.parser.ips(text))
-
+        # using stanford ner
+        data = self.text.split()
         for title, tag in self.standford_ner.tag(set(data)):
             if tag == 'PERSON':
                 people.append(title)
