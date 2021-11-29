@@ -9,6 +9,8 @@ from nltk.tag.stanford import StanfordNERTagger
 
 from parsers.detectors.DetectorInterface import DetectorInterface
 
+import streamlit as st
+
 # to analyze big fields
 csv.field_size_limit(min(sys.maxsize, 2147483646))
 
@@ -17,13 +19,14 @@ class PIIAnalyzerDetector(DetectorInterface):
     """
     Detector for PIIAnalyzer
     """
-
+    @st.cache
     def extract_pii_from_text(self, text):
         with tempfile.NamedTemporaryFile() as tmp:
             tmp.write(str.encode(text))
             piianalyzer = PiiAnalyzer(tmp)
             return piianalyzer.analysis()
-
+    
+    @st.cache
     def extract_pii_from_df(self, df):
         # create and write text to temp file
         tmp = tempfile.NamedTemporaryFile(delete=False)

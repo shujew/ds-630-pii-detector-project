@@ -4,7 +4,6 @@ import pandas as pd
 import os
 
 
-@st.cache
 def scan_directory(path):
     from parse_files import parse_files
     from results_builder import build_summary_df_from_results

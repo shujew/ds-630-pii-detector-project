@@ -15,18 +15,21 @@ from spacy.lang.en import English
 
 from parsers.detectors.DetectorInterface import DetectorInterface
 
+import streamlit as st
 
 class PIICatcherDetector(DetectorInterface):
     """
     Detector for PIICatcher
     """
 
+    @st.cache
     def extract_pii_from_text(self, text):
         with tempfile.NamedTemporaryFile() as tmp:
             tmp.write(str.encode(text, encoding='utf-8'))
             result = self.scan_file_object(tmp)
             return self.summarize_scan_file_object_results(result)
 
+    @st.cache
     def extract_pii_from_df(self, df):
         with tempfile.NamedTemporaryFile() as tmp:
             df.to_csv(tmp)
