@@ -21,10 +21,16 @@ class PIIAnalyzerDetector(DetectorInterface):
     """
     @st.cache
     def extract_pii_from_text(self, text):
-        with tempfile.NamedTemporaryFile() as tmp:
-            tmp.write(str.encode(text))
-            piianalyzer = PiiAnalyzer(tmp)
-            return piianalyzer.analysis()
+        # create and write text to temp file
+        tmp = tempfile.NamedTemporaryFile(delete=False)
+        tmp.write(text)
+        # do analysis
+        piianalyzer = PiiAnalyzer(tmp)
+        results = piianalyzer.analysis()
+        # delete temp file
+        tmp.close()
+        os.unlink(tmp.name)
+
     
     @st.cache
     def extract_pii_from_df(self, df):
