@@ -6,9 +6,11 @@ import pandas as pd
 
 from presidio_analyzer import AnalyzerEngine
 from presidio_analyzer.recognizer_result import RecognizerResult
+from presidio_analyzer import nlp_engine
 
 from parsers.detectors.DetectorInterface import DetectorInterface
 
+import streamlit as st
 
 class PresidioDetector(DetectorInterface):
     """
@@ -44,6 +46,9 @@ class PresidioDetector(DetectorInterface):
             'AU_MEDICARE',
         ]
 
+    @st.cache(hash_funcs={
+        nlp_engine.spacy_nlp_engine.SpacyNlpEngine: lambda x: 0,
+    })
     def extract_pii_from_text(self, text):
         summary = {}
         results = self.analyzer.analyze(
@@ -65,6 +70,9 @@ class PresidioDetector(DetectorInterface):
 
         return summary
 
+    @st.cache(hash_funcs={
+        nlp_engine.spacy_nlp_engine.SpacyNlpEngine: lambda x: 0,
+    })
     def extract_pii_from_df(self, df):
         summary = {}
 

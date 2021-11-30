@@ -3,6 +3,7 @@
 # python -m spacy download en_core_web_sm
 # brew install libmagic
 
+import os
 import pandas as pd
 import tempfile
 
@@ -14,38 +15,41 @@ from spacy.lang.en import English
 
 from parsers.detectors.DetectorInterface import DetectorInterface
 
+import streamlit as st
+
 class PIICatcherDetector(DetectorInterface):
     """
     Detector for PIICatcher
     """
 
+    @st.cache
     def extract_pii_from_text(self, text):
-        with tempfile.NamedTemporaryFile() as tmp:
-            with open(tmp.name, 'w') as f:
-                f.write(text)
-            with open(tmp.name) as d:
-                result = self.scan_file_object(d)
-                return self.summarize_scan_file_object_results(result)
+        with tempfile.NamedTemporaryFile(mode='w+') as tmp:
+            tmp.write(text)
+            tmp.seek(0)
+            result = self.scan_file_object(tmp)
+            return self.summarize_scan_file_object_results(result)
 
+    @st.cache
     def extract_pii_from_df(self, df):
-        with tempfile.NamedTemporaryFile() as tmp:
+        with tempfile.NamedTemporaryFile(mode='w+') as tmp:
             df.to_csv(tmp)
-            with open(tmp.name) as d:
-                result = self.scan_file_object(d)
-                return self.summarize_scan_file_object_results(result)
+            tmp.seek(0)
+            result = self.scan_file_object(tmp)
+            return self.summarize_scan_file_object_results(result)
 
     def summarize_scan_file_object_results(self, results):
         summary = {}
         for result in results:
             summary[result.name] = result.value
-        
+
         if 'PHONE' in summary:
             summary['PHONE_NUMBER'] = summary.pop('PHONE')
         if 'EMAIL' in summary:
             summary['EMAIL_ADDRESS'] = summary.pop('EMAIL')
         if 'SSN' in summary:
             summary['US_SSN'] = summary.pop('SSN')
-        
+
         return summary
 
     # This function was only available in v0.13.0 so
@@ -60,6 +64,7 @@ class PIICatcherDetector(DetectorInterface):
 
         scanner.scan(context)
         return scanner.get_pii_types()
+
 
 class IO(NamedObject):
     def __init__(self, name, fd):
@@ -80,7 +85,8 @@ class IO(NamedObject):
         ner = context["ner"]
 
         data = self._descriptor.read()
-        [self._pii.add(pii) for pii in ner.scan(data)]
+        ner_results = ner.scan(data)
+        [self._pii.add(pii) for pii in ner_results]
         tokens = tokenizer.tokenize(data)
         for t in tokens:
             if not t.is_stop:
@@ -105,6 +111,7 @@ class File(IO):
             with open(self.get_name(), "r") as f:
                 self.descriptor = f
                 super().scan(context)
+
 
 class Tokenizer:
     def __init__(self):

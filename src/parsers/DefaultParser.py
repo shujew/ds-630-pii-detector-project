@@ -28,9 +28,9 @@ class DefaultParser():
         libmad0 libsox-fmt-mp3 sox libjpeg-dev swig
     """
     detectors = {
-        'presidio': PresidioDetector(),
-        'pii_catcher': PIICatcherDetector(),
         'pii_analyzer': PIIAnalyzerDetector(),
+        'pii_catcher': PIICatcherDetector(),
+        'presidio': PresidioDetector(),
     }
 
     def extract_text(self, path):

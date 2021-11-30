@@ -4,7 +4,6 @@ import pandas as pd
 import os
 
 
-@st.cache
 def scan_directory(path):
     from parse_files import parse_files
     from results_builder import build_summary_df_from_results
@@ -98,7 +97,7 @@ if folder_path:
                         value_count = piicatcher_pii[pii_type]
                         if value_count > 0:
                             st.write(
-                                f'PIIAnalyzer {pii_type} count: {value_count}')
+                                f'PIICatcher {pii_type} count: {value_count}')
 
             if 'presidio' in pii:
                 presidio_pii = pii['presidio']

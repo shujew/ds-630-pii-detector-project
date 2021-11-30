@@ -7,6 +7,10 @@ from parsers.ImageParser import ImageParser
 from parsers.PdfParser import PdfParser
 from parsers.SheetParser import SheetParser
 
+import streamlit as st
+
+from copy import deepcopy
+
 default_parser = DefaultParser()
 pdf_parser = PdfParser()
 image_parser = ImageParser()
@@ -86,7 +90,7 @@ def get_file_metadata(filepath):
                 # hack for @st.cache to work properly on macOS
                 # because this import tries to get cached 
                 # crashing the app on macOS
-                get_file_security = eval('from get_file_metadata_windows import get_file_security')
+                from get_file_metadata_windows import get_file_security
                 pSD = get_file_security(filepath)
                 owner_name, _, _ = pSD.get_owner()
                 return owner_name
@@ -101,7 +105,7 @@ def get_file_metadata(filepath):
                 # hack for @st.cache to work properly on macOS
                 # because this import tries to get cached 
                 # crashing the app on macOS
-                get_file_security = eval('from get_file_metadata_windows import get_file_security')
+                from get_file_metadata_windows import get_file_security
                 pSD = get_file_security(filepath)
                 _, owner_domain, _ = pSD.get_owner()
                 return owner_domain
@@ -117,7 +121,7 @@ def get_file_metadata(filepath):
         'last_modified': stat_info.st_mtime,
     }
 
-
+@st.cache
 def parse_file(filepath, file_extension):
     """
     Parse file using right parser and detect piis
@@ -130,10 +134,8 @@ def parse_file(filepath, file_extension):
         dict: results
     """
     parser = get_parser(file_extension)
-    metadata = get_file_metadata(filepath)
     pii = parser.detect_pii(filepath, file_extension)
     return {
-        'metadata': metadata,
         'pii': pii,
     }
 
@@ -157,7 +159,11 @@ def parse_files(path):
             continue
         try:
             result = parse_file(filepath, file_extension)
-            results[filepath] = result
+            result_copy = deepcopy(result)
+            
+            results[filepath] = result_copy
+            metadata = get_file_metadata(filepath)
+            results[filepath]['metadata'] = metadata
         except Exception as e:
             print(f'Error while parsing {filepath}: {e}. Skipping!')
 
