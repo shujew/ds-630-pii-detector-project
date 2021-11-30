@@ -71,8 +71,7 @@ class PresidioDetector(DetectorInterface):
         return summary
 
     @st.cache(hash_funcs={
-        PreshMap: lambda x: 0,
-        cymem.Pool: lambda x: 0,
+        nlp_engine.spacy_nlp_engine.SpacyNlpEngine: lambda x: 0,
     })
     def extract_pii_from_df(self, df):
         summary = {}
