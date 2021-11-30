@@ -6,11 +6,9 @@ import pandas as pd
 
 from presidio_analyzer import AnalyzerEngine
 from presidio_analyzer.recognizer_result import RecognizerResult
+from presidio_analyzer import nlp_engine
 
 from parsers.detectors.DetectorInterface import DetectorInterface
-
-from preshed.maps import PreshMap
-from cymem import cymem
 
 import streamlit as st
 
@@ -49,8 +47,7 @@ class PresidioDetector(DetectorInterface):
         ]
 
     @st.cache(hash_funcs={
-        PreshMap: lambda x: 0,
-        cymem.Pool: lambda x: 0,
+        nlp_engine.spacy_nlp_engine.SpacyNlpEngine: lambda x: 0,
     })
     def extract_pii_from_text(self, text):
         summary = {}
