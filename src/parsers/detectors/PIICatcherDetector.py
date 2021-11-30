@@ -85,10 +85,7 @@ class IO(NamedObject):
         ner = context["ner"]
 
         data = self._descriptor.read()
-        print('here')
-        print(len(data))
         ner_results = ner.scan(data)
-        print(ner_results)
         [self._pii.add(pii) for pii in ner_results]
         tokens = tokenizer.tokenize(data)
         for t in tokens:
