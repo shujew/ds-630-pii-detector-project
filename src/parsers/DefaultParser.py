@@ -1,5 +1,3 @@
-import textract
-
 from parsers.detectors.PIIAnalyzerDetector import PIIAnalyzerDetector
 from parsers.detectors.PIICatcherDetector import PIICatcherDetector
 from parsers.detectors.PresidioDetector import PresidioDetector
@@ -44,10 +42,9 @@ class DefaultParser():
             str: string contents of file
         """
         try:
-            text_bytes = textract.process(path)
-            return text_bytes.decode('utf8')
-        except Exception as e:
             return Path(path).read_text()
+        except Exception as e:
+            return ''
 
     def clean_text(self, text):
         """
