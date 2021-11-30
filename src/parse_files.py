@@ -7,6 +7,8 @@ from parsers.ImageParser import ImageParser
 from parsers.PdfParser import PdfParser
 from parsers.SheetParser import SheetParser
 
+import streamlit as st
+
 default_parser = DefaultParser()
 pdf_parser = PdfParser()
 image_parser = ImageParser()
@@ -117,7 +119,7 @@ def get_file_metadata(filepath):
         'last_modified': stat_info.st_mtime,
     }
 
-
+@st.cache
 def parse_file(filepath, file_extension):
     """
     Parse file using right parser and detect piis
@@ -130,10 +132,8 @@ def parse_file(filepath, file_extension):
         dict: results
     """
     parser = get_parser(file_extension)
-    metadata = get_file_metadata(filepath)
     pii = parser.detect_pii(filepath, file_extension)
     return {
-        'metadata': metadata,
         'pii': pii,
     }
 
@@ -158,6 +158,8 @@ def parse_files(path):
         try:
             result = parse_file(filepath, file_extension)
             results[filepath] = result
+            metadata = get_file_metadata(filepath)
+            results[filepath]['metadata'] = metadata
         except Exception as e:
             print(f'Error while parsing {filepath}: {e}. Skipping!')
 
