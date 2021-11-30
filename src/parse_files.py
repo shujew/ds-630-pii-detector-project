@@ -9,6 +9,8 @@ from parsers.SheetParser import SheetParser
 
 import streamlit as st
 
+from copy import deepcopy
+
 default_parser = DefaultParser()
 pdf_parser = PdfParser()
 image_parser = ImageParser()
@@ -157,7 +159,9 @@ def parse_files(path):
             continue
         try:
             result = parse_file(filepath, file_extension)
-            results[filepath] = result
+            result_copy = deepcopy(result)
+            
+            results[filepath] = result_copy
             metadata = get_file_metadata(filepath)
             results[filepath]['metadata'] = metadata
         except Exception as e:
